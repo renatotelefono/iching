@@ -202,15 +202,31 @@ export default function Page() {
     });
   }
 
-  const meta = HEX_META[kw] || { title: `Esagramma ${kw}`, hanzi: "", pinyin: "" };
-  const metaRel = HEX_META[kwRel] || { title: `Esagramma ${kwRel}`, hanzi: "", pinyin: "" };
-  const metaNuc = HEX_META[kwNuclear] || { title: `Esagramma ${kwNuclear}`, hanzi: "", pinyin: "" };
-  const metaComp = HEX_META[kwComplementary] || { title: `Esagramma ${kwComplementary}`, hanzi: "", pinyin: "" };
+function buildMeta(kw: number): { title: string; hanzi: string; pinyin: string } {
+  if (HEX_META[kw]) return HEX_META[kw];
 
-  const txt = getHexText(kw);
-  const txtRel = getHexText(kwRel);
-  const txtNuc = getHexText(kwNuclear);
-  const txtComp = getHexText(kwComplementary);
+  const rec = (HEX_TEXT_IT as Record<string, HexText>)[String(kw)];
+  if (rec?.title) {
+    // rimuove il numero iniziale e il punto, se presenti (es. "34. Ta Chuang..." → "Ta Chuang...")
+    const cleanTitle = rec.title.replace(/^\d+\.\s*/, "");
+    return { title: cleanTitle, hanzi: "", pinyin: "" };
+  }
+
+  return { title: `Esagramma ${kw}`, hanzi: "", pinyin: "" };
+}
+
+
+const meta = buildMeta(kw);
+const metaRel = buildMeta(kwRel);
+const metaNuc = buildMeta(kwNuclear);
+const metaComp = buildMeta(kwComplementary);
+
+const txt = getHexText(kw);
+const txtRel = getHexText(kwRel);
+const txtNuc = getHexText(kwNuclear);
+const txtComp = getHexText(kwComplementary);
+
+ 
 
   return (
     <div className="mx-auto max-w-6xl p-6 space-y-6">
