@@ -1,6 +1,7 @@
 /* eslint-disable react/no-unescaped-entities */
 "use client";
 
+
 import React, { useMemo, useState } from "react";
 import HEX_TEXT_IT from "@/data/hexagrams.it.json";
 
@@ -40,8 +41,11 @@ function mutate(lines: LineValue[]): LineValue[] {
 }
 
 function triVal(bits3: number[]): number {
-  return bits3[0] + (bits3[1] << 1) + (bits3[2] << 2);
+  const rev = [...bits3].reverse(); // linea alta diventa indice 0
+  return rev[0] + (rev[1] << 1) + (rev[2] << 2);
 }
+
+
 
 // Tabella King Wen 8×8 – righe=trigramma inferiore, colonne=trigramma superiore
 const KW_TABLE: number[][] = [
@@ -56,10 +60,12 @@ const KW_TABLE: number[][] = [
 ];
 const tableIndexFromTriVal = (v: number) => 7 - v;
 function kingWenNumber(bits6: number[]): number {
-  const lower = triVal(bits6.slice(0, 3));
-  const upper = triVal(bits6.slice(3, 6));
+  const lower = triVal([bits6[0], bits6[1], bits6[2]]);
+  const upper = triVal([bits6[3], bits6[4], bits6[5]]);
   return KW_TABLE[tableIndexFromTriVal(lower)][tableIndexFromTriVal(upper)];
 }
+
+
 
 // Complementare: inversione yin/yang su tutte le 6 linee
 const complementaryBits = (bits6: number[]) => bits6.map((b) => b ^ 1);
@@ -121,21 +127,22 @@ function LineGraphic({ yang, changing }: { yang: boolean; changing: boolean }) {
 }
 
 function HexagramView({ lines, title }: { lines: LineValue[]; title: string }) {
-  const vis = [...lines].reverse();
   return (
     <div className="w-full rounded-2xl border bg-white shadow-sm">
       <div className="px-4 py-3 border-b">
         <div className="text-base font-semibold">{title}</div>
       </div>
-      <div className="p-4 space-y-2">
-        {vis.map((v, idxFromTop) => {
-          const idx = 5 - idxFromTop; // indice dal basso (1..6)
+      <div className="p-4 space-y-2 flex flex-col">
+        {[...lines].reverse().map((v, idx) => {
           const yang = isYang(v);
           const changing = isChanging(v);
+          const lineNumber = lines.length - idx; // linea 6 in alto → linea 1 in basso
           return (
             <div key={idx} className="flex items-center gap-3">
               <LineGraphic yang={yang} changing={changing} />
-              <div className="w-24 text-xs text-right text-neutral-500">linea {idx + 1} {changing ? "(muta)" : ""}</div>
+              <div className="w-24 text-xs text-right text-neutral-500">
+                linea {lineNumber} {changing ? "(muta)" : ""}
+              </div>
             </div>
           );
         })}
@@ -143,6 +150,9 @@ function HexagramView({ lines, title }: { lines: LineValue[]; title: string }) {
     </div>
   );
 }
+
+
+
 
 export default function Page() {
   const [question, setQuestion] = useState("");
