@@ -250,13 +250,13 @@ export default function Page() {
           {txt?.judgment && (
             <>
               <h3 className="mt-2 text-sm font-semibold">Giudizio</h3>
-              <p className="mt-1 text-sm whitespace-pre-line">{txt.judgment}</p>
+              <p className="mt-1 text-sm whitespace-pre-wrap">{txt.judgment}</p>
             </>
           )}
           {txt?.image && (
             <>
               <h3 className="mt-4 text-sm font-semibold">Immagine</h3>
-              <p className="mt-1 text-sm whitespace-pre-line">{txt.image}</p>
+              <p className="mt-1 text-sm whitespace-pre-wrap">{txt.image}</p>
             </>
           )}
         </section>
@@ -269,13 +269,13 @@ export default function Page() {
           {txtRel?.judgment && (
             <>
               <h3 className="mt-2 text-sm font-semibold">Giudizio</h3>
-              <p className="mt-1 text-sm whitespace-pre-line">{txtRel.judgment}</p>
+              <p className="mt-1 text-sm whitespace-pre-wrap">{txtRel.judgment}</p>
             </>
           )}
           {txtRel?.image && (
             <>
               <h3 className="mt-4 text-sm font-semibold">Immagine</h3>
-              <p className="mt-1 text-sm whitespace-pre-line">{txtRel.image}</p>
+              <p className="mt-1 text-sm whitespace-pre-wrap">{txtRel.image}</p>
             </>
           )}
         </section>
@@ -290,7 +290,7 @@ export default function Page() {
           <ul className="list-disc ml-5 text-sm">
             {displayedChanging.map((n) => {
               const key = String(n) as keyof HexTextLines;
-              return <li key={n}>Linea {n}: {txt?.lines?.[key]}</li>;
+              return <li key={n}>Linea {n}: <span className="whitespace-pre-wrap">{txt?.lines?.[key]}</span></li>;
             })}
           </ul>
         )}
@@ -306,13 +306,13 @@ export default function Page() {
           {txtNuc?.judgment && (
             <>
               <h3 className="mt-2 text-sm font-semibold">Giudizio</h3>
-              <p className="mt-1 text-sm whitespace-pre-line">{txtNuc.judgment}</p>
+              <p className="mt-1 text-sm whitespace-pre-wrap">{txtNuc.judgment}</p>
             </>
           )}
           {txtNuc?.image && (
             <>
               <h3 className="mt-4 text-sm font-semibold">Immagine</h3>
-              <p className="mt-1 text-sm whitespace-pre-line">{txtNuc.image}</p>
+              <p className="mt-1 text-sm whitespace-pre-wrap">{txtNuc.image}</p>
             </>
           )}
         </section>
@@ -325,13 +325,13 @@ export default function Page() {
           {txtComp?.judgment && (
             <>
               <h3 className="mt-2 text-sm font-semibold">Giudizio</h3>
-              <p className="mt-1 text-sm whitespace-pre-line">{txtComp.judgment}</p>
+              <p className="mt-1 text-sm whitespace-pre-wrap">{txtComp.judgment}</p>
             </>
           )}
           {txtComp?.image && (
             <>
               <h3 className="mt-4 text-sm font-semibold">Immagine</h3>
-              <p className="mt-1 text-sm whitespace-pre-line">{txtComp.image}</p>
+              <p className="mt-1 text-sm whitespace-pre-wrap">{txtComp.image}</p>
             </>
           )}
         </section>
