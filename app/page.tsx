@@ -247,8 +247,18 @@ export default function Page() {
           <p className="font-semibold">
             {kw}. {meta?.title} {meta?.hanzi} ({meta?.pinyin})
           </p>
-          <p className="mt-2 text-sm whitespace-pre-line">{txt?.judgment}</p>
-          <p className="mt-2 text-sm whitespace-pre-line">{txt?.image}</p>
+          {txt?.judgment && (
+            <>
+              <h3 className="mt-2 text-sm font-semibold">Giudizio</h3>
+              <p className="mt-1 text-sm whitespace-pre-line">{txt.judgment}</p>
+            </>
+          )}
+          {txt?.image && (
+            <>
+              <h3 className="mt-4 text-sm font-semibold">Immagine</h3>
+              <p className="mt-1 text-sm whitespace-pre-line">{txt.image}</p>
+            </>
+          )}
         </section>
 
         <section className="rounded-xl border bg-white shadow-sm p-4">
@@ -256,8 +266,18 @@ export default function Page() {
           <p className="font-semibold">
             {kwRel}. {metaRel?.title} {metaRel?.hanzi} ({metaRel?.pinyin})
           </p>
-          <p className="mt-2 text-sm whitespace-pre-line">{txtRel?.judgment}</p>
-          <p className="mt-2 text-sm whitespace-pre-line">{txtRel?.image}</p>
+          {txtRel?.judgment && (
+            <>
+              <h3 className="mt-2 text-sm font-semibold">Giudizio</h3>
+              <p className="mt-1 text-sm whitespace-pre-line">{txtRel.judgment}</p>
+            </>
+          )}
+          {txtRel?.image && (
+            <>
+              <h3 className="mt-4 text-sm font-semibold">Immagine</h3>
+              <p className="mt-1 text-sm whitespace-pre-line">{txtRel.image}</p>
+            </>
+          )}
         </section>
       </div>
 
@@ -283,8 +303,18 @@ export default function Page() {
           <p className="font-semibold">
             {kwNuclear}. {metaNuc?.title} {metaNuc?.hanzi} ({metaNuc?.pinyin})
           </p>
-          <p className="mt-2 text-sm whitespace-pre-line">{txtNuc?.judgment}</p>
-          <p className="mt-2 text-sm whitespace-pre-line">{txtNuc?.image}</p>
+          {txtNuc?.judgment && (
+            <>
+              <h3 className="mt-2 text-sm font-semibold">Giudizio</h3>
+              <p className="mt-1 text-sm whitespace-pre-line">{txtNuc.judgment}</p>
+            </>
+          )}
+          {txtNuc?.image && (
+            <>
+              <h3 className="mt-4 text-sm font-semibold">Immagine</h3>
+              <p className="mt-1 text-sm whitespace-pre-line">{txtNuc.image}</p>
+            </>
+          )}
         </section>
 
         <section className="rounded-xl border bg-white shadow-sm p-4">
@@ -292,8 +322,18 @@ export default function Page() {
           <p className="font-semibold">
             {kwComplementary}. {metaComp?.title} {metaComp?.hanzi} ({metaComp?.pinyin})
           </p>
-          <p className="mt-2 text-sm whitespace-pre-line">{txtComp?.judgment}</p>
-          <p className="mt-2 text-sm whitespace-pre-line">{txtComp?.image}</p>
+          {txtComp?.judgment && (
+            <>
+              <h3 className="mt-2 text-sm font-semibold">Giudizio</h3>
+              <p className="mt-1 text-sm whitespace-pre-line">{txtComp.judgment}</p>
+            </>
+          )}
+          {txtComp?.image && (
+            <>
+              <h3 className="mt-4 text-sm font-semibold">Immagine</h3>
+              <p className="mt-1 text-sm whitespace-pre-line">{txtComp.image}</p>
+            </>
+          )}
         </section>
       </div>
     </div>
