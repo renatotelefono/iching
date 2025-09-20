@@ -108,7 +108,18 @@ export default function Page() {
       {/* Header */}
       <header className="flex items-center justify-between">
         <h1 className="text-2xl font-bold tracking-tight">Lettura dell’I Ching</h1>
-        <div className="flex gap-2">
+          <div className="flex gap-2">
+          <button
+    onClick={() => alert("Qui andrà la logica per l’interpretazione")}
+    className="px-3 py-2 rounded-xl bg-green-600 text-white text-sm shadow hover:opacity-90"
+  >
+    Interpretazione
+  </button>
+          
+          
+          
+          
+          
           <button
             onClick={handleExplain}
             className="px-3 py-2 rounded-xl bg-blue-600 text-white text-sm shadow hover:opacity-90"
