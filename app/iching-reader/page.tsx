@@ -3,7 +3,10 @@
 import { useState } from "react";
 
 export default function IchingReaderPage() {
-  const [question, setQuestion] = useState("");
+  // 🔹 valori di default
+  const [question, setQuestion] = useState("cosa farò domani");
+  const [esagramma, setEsagramma] = useState("64");
+  const [lineeMobili, setLineeMobili] = useState(["2", "3", "5"]);
   const [response, setResponse] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -13,7 +16,11 @@ export default function IchingReaderPage() {
       const res = await fetch("/api/iching", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question }),
+        body: JSON.stringify({
+          question,
+          esagramma,
+          lineeMobili,
+        }),
       });
 
       const data = await res.json();
@@ -36,6 +43,23 @@ export default function IchingReaderPage() {
         placeholder="Inserisci la tua domanda..."
         className="border p-2 w-full h-28 mb-4"
       />
+
+      <div className="mb-4">
+        <input
+          type="text"
+          value={esagramma}
+          onChange={(e) => setEsagramma(e.target.value)}
+          className="border p-2 mr-2"
+          placeholder="Esagramma"
+        />
+        <input
+          type="text"
+          value={lineeMobili.join(",")}
+          onChange={(e) => setLineeMobili(e.target.value.split(","))}
+          className="border p-2"
+          placeholder="Linee mobili (es. 2,3,5)"
+        />
+      </div>
 
       <button
         onClick={handleSubmit}

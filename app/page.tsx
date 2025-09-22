@@ -19,7 +19,6 @@ import HEX_TEXT_IT from "@/data/hexagrams.it.json";
 import HexagramView from "@/components/HexagramView";
 import ExplanationPanel from "@/components/ExplanationPanel";
 
-// tipi per i testi
 type HexTextLines = Partial<Record<"1" | "2" | "3" | "4" | "5" | "6", string>>;
 type HexText = {
   title?: string;
@@ -41,6 +40,10 @@ export default function Page() {
 
   const [showExplanation, setShowExplanation] = useState(false);
   const [explanationText, setExplanationText] = useState("");
+
+  // 🔹 Stato per la risposta interpretazione
+  const [interpretazione, setInterpretazione] = useState("");
+  const [loadingInterp, setLoadingInterp] = useState(false);
 
   // calcoli principali
   const bits = useMemo(() => toBits(lines), [lines]);
@@ -76,7 +79,30 @@ export default function Page() {
   const trigramsPrimary = getTrigrams(bits);
   const trigramsRelation = getTrigrams(relBits);
 
-  // funzioni
+  // 🔹 Funzione: manda i dati al backend per interpretazione
+  async function handleInterpretazione() {
+    setLoadingInterp(true);
+    try {
+      const res = await fetch("/api/iching", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          question,
+          esagramma: kw,
+          lineeMobili: displayedChanging,
+        }),
+      });
+
+      const data = await res.json();
+      setInterpretazione(data.answer || "Nessuna risposta ricevuta");
+    } catch (err) {
+      console.error("Errore API interpretazione:", err);
+      setInterpretazione("Errore durante la consultazione");
+    } finally {
+      setLoadingInterp(false);
+    }
+  }
+
   function randomizeAll() {
     setLines(Array.from({ length: 6 }, () => tossThreeCoins()));
   }
@@ -108,14 +134,16 @@ export default function Page() {
       {/* Header */}
       <header className="flex items-center justify-between">
         <h1 className="text-2xl font-bold tracking-tight">Lettura dell’I Ching</h1>
-          <div className="flex gap-2">
+        <div className="flex gap-2">
           <button
-    onClick={() => alert("Qui andrà la logica per l’interpretazione")}
-    className="px-3 py-2 rounded-xl bg-green-600 text-white text-sm shadow hover:opacity-90"
-  >
-    Interpretazione
-  </button>
-              <button
+            onClick={handleInterpretazione}
+            className="px-3 py-2 rounded-xl bg-green-600 text-white text-sm shadow hover:opacity-90"
+            disabled={loadingInterp}
+          >
+            {loadingInterp ? "In elaborazione..." : "Interpretazione"}
+          </button>
+
+          <button
             onClick={handleExplain}
             className="px-3 py-2 rounded-xl bg-blue-600 text-white text-sm shadow hover:opacity-90"
           >
@@ -135,6 +163,14 @@ export default function Page() {
           </button>
         </div>
       </header>
+
+      {/* 🔹 Mostra interpretazione */}
+      {interpretazione && (
+        <div className="mt-4 border p-4 rounded bg-gray-50">
+          <h2 className="font-bold">Interpretazione</h2>
+          <p className="whitespace-pre-line">{interpretazione}</p>
+        </div>
+      )}
 
       {showExplanation && (
         <ExplanationPanel
@@ -182,25 +218,20 @@ export default function Page() {
             </div>
           </div>
 
-          {/* Griglia Trigrammi + Linee mutanti + King Wen */}
+          {/* Trigrammi e King Wen */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            {/* Trigramma primario */}
             <div className="rounded-lg border p-2 text-xs">
               <span className="font-semibold">Trigrammi (primario)</span>
               <br />
               Inferiore: {trigramsPrimary.lower.name} {trigramsPrimary.lower.symbol} ·{" "}
               Superiore: {trigramsPrimary.upper.name} {trigramsPrimary.upper.symbol}
             </div>
-
-            {/* Trigramma relazione */}
             <div className="rounded-lg border p-2 text-xs">
               <span className="font-semibold">Trigrammi (relazione)</span>
               <br />
               Inferiore: {trigramsRelation.lower.name} {trigramsRelation.lower.symbol} ·{" "}
               Superiore: {trigramsRelation.upper.name} {trigramsRelation.upper.symbol}
             </div>
-
-            {/* Linee che mutano */}
             <div className="rounded-lg border p-2">
               <div className="flex items-center justify-between mb-2">
                 <span className="font-medium text-sm">Linee che mutano</span>
@@ -220,8 +251,6 @@ export default function Page() {
                 <p className="text-sm">{displayedChanging.join(", ")}</p>
               )}
             </div>
-
-            {/* King Wen */}
             <div className="rounded-lg border p-2 font-bold flex flex-col items-center justify-center text-lg">
               <span className="text-xs font-medium text-neutral-500">King Wen</span>
               {kw}
@@ -296,7 +325,12 @@ export default function Page() {
           <ul className="list-disc ml-5 text-sm">
             {displayedChanging.map((n) => {
               const key = String(n) as keyof HexTextLines;
-              return <li key={n}>Linea {n}: <span className="whitespace-pre-wrap">{txt?.lines?.[key]}</span></li>;
+              return (
+                <li key={n}>
+                  Linea {n}:{" "}
+                  <span className="whitespace-pre-wrap">{txt?.lines?.[key]}</span>
+                </li>
+              );
             })}
           </ul>
         )}

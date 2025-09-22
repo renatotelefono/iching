@@ -9,24 +9,30 @@ const client = new OpenAI({
 
 export async function POST(req: Request) {
   try {
-    const { question } = await req.json();
+    // 🔹 Supporta sia i nomi nuovi che quelli vecchi
+    const body = await req.json();
+    const question = body.question;
+    const hexagram = body.hexagram || body.esagramma;
+    const changingLines = body.changingLines || body.lineeMobili;
 
     // 1. Carica hexagrams
     const hexPath = path.resolve("data", "hexagrams.it.json");
     const raw = fs.readFileSync(hexPath, "utf-8");
     const hexagrams = JSON.parse(raw);
 
-    // 2. Esagramma casuale
-    const keys = Object.keys(hexagrams);
-    const randomKey = keys[Math.floor(Math.random() * keys.length)];
-    const hex = hexagrams[randomKey];
+    // 2. Usa l’esagramma passato dal frontend
+    const hex = hexagrams[String(hexagram)];
+    if (!hex) {
+      return NextResponse.json(
+        { error: `Esagramma ${hexagram} non trovato` },
+        { status: 400 }
+      );
+    }
 
-    // 3. Due linee mobili casuali
-    const lines = Object.keys(hex.lines);
-    const randomLines = lines
-      .sort(() => 0.5 - Math.random())
-      .slice(0, 2)
-      .map((n) => `Linea ${n}: ${hex.lines[n]}`);
+    // 3. Prepara linee mobili
+    const selectedLines = (changingLines || []).map(
+      (n: number) => `Linea ${n}: ${hex.lines?.[n]}`
+    );
 
     // 4. Contesto per GPT
     const context = `
@@ -37,7 +43,7 @@ Giudizio: ${hex.judgment}
 Immagine: ${hex.image}
 
 Linee mobili:
-${randomLines.join("\n")}
+${selectedLines.length > 0 ? selectedLines.join("\n") : "(nessuna)"}
 `;
 
     // 5. Chiamata a OpenAI
