@@ -61,10 +61,7 @@ ${selectedLines.length > 0 ? selectedLines.join("\n") : "(nessuna)"}
 
     const answer = completion.choices[0].message?.content || "";
 
-    // 6. Scrivi risposta su file
-    const outPath = path.resolve("public", "risposta.txt");
-    fs.writeFileSync(outPath, answer, "utf-8");
-
+    // 🔹 Non scrive più il file, restituisce solo la risposta
     return NextResponse.json({ answer });
   } catch (err: any) {
     console.error("Errore API:", err);
