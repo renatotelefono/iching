@@ -23,7 +23,11 @@ export default function IchingReaderPage() {
         }),
       });
 
+     
       const data = await res.json();
+console.log("RISPOSTA API:", data);   // 👈 vedi cosa arriva
+setResponse(data.answer || "Nessuna risposta ricevuta");
+
       setResponse(data.answer || "Nessuna risposta ricevuta");
     } catch (err) {
       console.error("Errore API:", err);
