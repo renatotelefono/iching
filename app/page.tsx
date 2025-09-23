@@ -3,7 +3,6 @@
 import { useState, useMemo } from "react";
 import {
   LineValue,
-  tossThreeCoins,
   toBits,
   mutate,
   complementaryBits,
@@ -18,7 +17,7 @@ import HEX_TEXT_IT from "@/data/hexagrams.it.json";
 
 import HexagramView from "@/components/HexagramView";
 import ExplanationPanel from "@/components/ExplanationPanel";
-
+import CoinToss from "@/components/CoinToss";
 type HexTextLines = Partial<Record<"1" | "2" | "3" | "4" | "5" | "6", string>>;
 type HexText = {
   title?: string;
@@ -41,7 +40,6 @@ export default function Page() {
   const [showExplanation, setShowExplanation] = useState(false);
   const [explanationText, setExplanationText] = useState("");
 
-  // 🔹 Stato per la risposta interpretazione
   const [interpretazione, setInterpretazione] = useState("");
   const [loadingInterp, setLoadingInterp] = useState(false);
 
@@ -79,7 +77,6 @@ export default function Page() {
   const trigramsPrimary = getTrigrams(bits);
   const trigramsRelation = getTrigrams(relBits);
 
-  // 🔹 Funzione: manda i dati al backend per interpretazione
   async function handleInterpretazione() {
     setLoadingInterp(true);
     try {
@@ -103,9 +100,23 @@ export default function Page() {
     }
   }
 
-  function randomizeAll() {
-    setLines(Array.from({ length: 6 }, () => tossThreeCoins()));
+  // 🔹 nuova versione: chiama iching_monete.html e prende JSON
+async function randomizeAll() {
+  try {
+    const res = await fetch("/api/monete");
+    const data = await res.json();
+    if (data.lines && Array.isArray(data.lines)) {
+      setLines(data.lines);
+    } else {
+      alert("Errore: risposta non valida dall’API");
+    }
+  } catch (err) {
+    console.error("Errore fetch:", err);
+    alert("Impossibile contattare l’API delle monete");
   }
+}
+
+
   function setAllYin() {
     setLines([8, 8, 8, 8, 8, 8]);
   }
@@ -149,12 +160,7 @@ export default function Page() {
           >
             Spiegazione
           </button>
-          <button
-            onClick={randomizeAll}
-            className="px-3 py-2 rounded-xl bg-neutral-900 text-white text-sm shadow hover:opacity-90"
-          >
-            Lancia 3 monete × 6
-          </button>
+          
           <button
             onClick={setAllYin}
             className="px-3 py-2 rounded-xl bg-white border text-sm shadow-sm hover:bg-neutral-50"
@@ -178,21 +184,38 @@ export default function Page() {
           onClose={() => setShowExplanation(false)}
         />
       )}
-
+ 
+      {/* 🔹 Riquadro DOMANDA separato */}
+    <div className="rounded-xl border bg-white shadow-sm p-4">
+      <label className="text-sm font-medium">Domanda</label>
+      <input
+        value={question}
+        onChange={(e) => setQuestion(e.target.value)}
+        placeholder="Scrivi la tua intenzione/domanda…"
+        className="w-full rounded-lg border px-3 py-2 text-sm mt-1"
+      />
+    </div>
+ 
+ 
+ {/* 🔹 Inserito qui il simulatore monete */}
+      <CoinToss onComplete={(newLines) => setLines(newLines)} />
+      
+      
+   
+      
+      
+      
+      
+      
+      
+      
+      
+      
       {/* Riquadro principale */}
       <div className="rounded-xl border bg-white shadow-sm p-4 grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Colonna sinistra */}
         <section className="space-y-4">
-          {/* Domanda */}
-          <div>
-            <label className="text-sm font-medium">Domanda (facoltativa)</label>
-            <input
-              value={question}
-              onChange={(e) => setQuestion(e.target.value)}
-              placeholder="Scrivi la tua intenzione/domanda…"
-              className="w-full rounded-lg border px-3 py-2 text-sm"
-            />
-          </div>
+      
 
           {/* Linee manuali */}
           <div>
