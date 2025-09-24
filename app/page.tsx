@@ -76,6 +76,7 @@ export default function Page() {
 
   const trigramsPrimary = getTrigrams(bits);
   const trigramsRelation = getTrigrams(relBits);
+  const [coinTossKey, setCoinTossKey] = useState(0);
 
   async function handleInterpretazione() {
     setLoadingInterp(true);
@@ -119,6 +120,7 @@ async function randomizeAll() {
 
   function setAllYin() {
     setLines([8, 8, 8, 8, 8, 8]);
+    setCoinTossKey((k) => k + 1); // forza remount di CoinToss
   }
   function setLine(idx: number, v: LineValue) {
     setLines((prev) => {
@@ -127,6 +129,9 @@ async function randomizeAll() {
       return copy;
     });
   }
+function resetApp() {
+  window.location.reload();
+}
 
   async function handleExplain() {
     try {
@@ -144,7 +149,7 @@ async function randomizeAll() {
     <div className="p-6 space-y-6 relative">
       {/* Header */}
       <header className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold tracking-tight">Lettura dell’I Ching</h1>
+        <h1 className="text-2xl font-bold tracking-tight"> I Ching</h1>
         <div className="flex gap-2">
           <button
             onClick={handleInterpretazione}
@@ -161,12 +166,13 @@ async function randomizeAll() {
             Spiegazione
           </button>
           
-          <button
-            onClick={setAllYin}
-            className="px-3 py-2 rounded-xl bg-white border text-sm shadow-sm hover:bg-neutral-50"
-          >
-            Azzera (tutte yin)
-          </button>
+         <button
+  onClick={resetApp}
+  className="px-3 py-2 rounded-xl bg-white border text-sm shadow-sm hover:bg-neutral-50"
+>
+Nuova Domanda
+</button>
+
         </div>
       </header>
 
@@ -198,7 +204,10 @@ async function randomizeAll() {
  
  
  {/* 🔹 Inserito qui il simulatore monete */}
-      <CoinToss onComplete={(newLines) => setLines(newLines)} />
+      <CoinToss 
+       key={coinTossKey}
+      onComplete={(newLines) => setLines(newLines)}
+       />
       
       
    

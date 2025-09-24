@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import Image from "next/image";
 
 type LineValue = 6 | 7 | 8 | 9;
 
@@ -21,19 +22,27 @@ function calcLine(values: ("Testa" | "Croce")[]): LineValue {
 
 export default function CoinToss({
   onComplete,
+  resetSignal,
 }: {
   onComplete: (lines: LineValue[]) => void;
+  resetSignal?: number;
 }) {
   const [lines, setLines] = useState<LineValue[]>([]);
   const [spinning, setSpinning] = useState(false);
-  const [coins, setCoins] = useState<( "Testa" | "Croce")[]>(["Testa", "Testa", "Testa"]);
+  const [coins, setCoins] = useState<("Testa" | "Croce")[]>(["Testa", "Testa", "Testa"]);
+
+  // 🔹 Reset interno quando cambia resetSignal
+  useEffect(() => {
+    setLines([]);
+    setCoins(["Testa", "Testa", "Testa"]);
+    setSpinning(false);
+  }, [resetSignal]);
 
   async function startToss() {
     if (lines.length >= 6 || spinning) return;
 
     setSpinning(true);
 
-    // Simuliamo animazione per 1.5s
     setTimeout(() => {
       const results: ("Testa" | "Croce")[] = [tossCoin(), tossCoin(), tossCoin()];
       setCoins(results);
@@ -43,7 +52,7 @@ export default function CoinToss({
       setSpinning(false);
 
       if (newLines.length === 6) {
-        onComplete(newLines); // Passa i dati a Page
+        onComplete(newLines);
       }
     }, 1500);
   }
@@ -64,12 +73,16 @@ export default function CoinToss({
         {coins.map((c, i) => (
           <div
             key={i}
-            className={`w-20 h-20 rounded-full flex items-center justify-center text-sm font-bold border ${
+            className={`w-20 h-20 rounded-full flex items-center justify-center ${
               spinning ? "animate-spin" : ""
             }`}
-            style={{ background: c === "Testa" ? "#fef3c7" : "#d1d5db" }}
           >
-            {c}
+            <Image
+              src={c === "Testa" ? "/Testa.png" : "/Croce.png"}
+              alt={c}
+              width={80}
+              height={80}
+            />
           </div>
         ))}
       </div>
