@@ -12,11 +12,21 @@ function tossCoin(): "Testa" | "Croce" {
 function calcLine(values: ("Testa" | "Croce")[]): LineValue {
   const sum = values.reduce((s, v) => s + (v === "Testa" ? 3 : 2), 0);
   switch (sum) {
-    case 6: return 6; // yin vecchio (muta)
-    case 7: return 7; // yang giovane
-    case 8: return 8; // yin giovane
-    case 9: return 9; // yang vecchio (muta)
+    case 6: return 6;
+    case 7: return 7;
+    case 8: return 8;
+    case 9: return 9;
     default: return 8;
+  }
+}
+
+function renderLineLabel(value: LineValue): string {
+  switch (value) {
+    case 6: return "6 — yin vecchio (muta)";
+    case 7: return "7 — yang giovane";
+    case 8: return "8 — yin giovane";
+    case 9: return "9 — yang vecchio (muta)";
+    default: return "";
   }
 }
 
@@ -31,7 +41,6 @@ export default function CoinToss({
   const [spinning, setSpinning] = useState(false);
   const [coins, setCoins] = useState<("Testa" | "Croce")[]>(["Testa", "Testa", "Testa"]);
 
-  // 🔹 Reset interno quando cambia resetSignal
   useEffect(() => {
     setLines([]);
     setCoins(["Testa", "Testa", "Testa"]);
@@ -43,7 +52,6 @@ export default function CoinToss({
 
     setSpinning(true);
 
-    // 🔹 Animazione: cambia casualmente le monete ogni 150 ms
     const interval = setInterval(() => {
       setCoins([
         Math.random() < 0.5 ? "Testa" : "Croce",
@@ -52,7 +60,6 @@ export default function CoinToss({
       ]);
     }, 150);
 
-    // 🔹 Dopo 1.5 secondi ferma animazione e calcola il risultato reale
     setTimeout(() => {
       clearInterval(interval);
 
@@ -71,43 +78,60 @@ export default function CoinToss({
   }
 
   return (
-    <div className="p-4 border rounded-lg bg-gray-50 text-center">
-      <h2 className="font-bold text-lg mb-2">Simulatore I Ching</h2>
+    <div className="p-4 border rounded-lg bg-gray-50">
+      <h2 className="font-bold text-lg mb-2 text-center">Simulatore I Ching</h2>
 
       <button
         onClick={startToss}
         disabled={spinning || lines.length >= 6}
-        className="px-4 py-2 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 disabled:opacity-50"
+        className="px-4 py-2 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 disabled:opacity-50 w-full"
       >
         {lines.length < 6 ? "Lancia le monete" : "Esagramma completato"}
       </button>
 
-      {/* Monete + dicitura */}
-      <div className="flex justify-center gap-6 mt-4">
-        {coins.map((c, i) => (
-          <div
-            key={i}
-            className="w-20 h-24 flex flex-col items-center justify-start"
-          >
-            <Image
-              src={c === "Testa" ? "/Testa.png" : "/Croce.png"}
-              alt={c}
-              width={80}
-              height={80}
-            />
-            {/* Scritta sotto la moneta */}
-            <span className="mt-2 text-sm font-medium">{c}</span>
-          </div>
-        ))}
-      </div>
+      {/* Layout a due colonne: linee a sinistra, monete a destra */}
+      <div className="flex justify-center items-start gap-8 mt-6">
+        
+        {/* Colonna linee */}
+<div className="text-left font-mono text-sm">
+  <p className="font-bold mb-2">Linee (dal basso all’alto)</p>
+  <div className="border rounded-lg p-2 bg-white shadow-sm">
+    {Array.from({ length: 6 }, (_, idx) => {
+      const lineValue = lines[idx];
+      const lineNumber = idx + 1;
+      return (
+        <div
+          key={idx}
+          className="flex items-center justify-between mb-1 px-2 py-1 border rounded-md bg-gray-50"
+        >
+          <span>
+            {lineValue !== undefined ? renderLineLabel(lineValue) : ""}
+          </span>
+          <span className="text-gray-500">linea {lineNumber}</span>
+        </div>
+      );
+    })}
+  </div>
+</div>
 
-      {/* Linee generate */}
-      <div className="mt-6 text-left font-mono text-sm">
-        {lines.slice().reverse().map((line, i) => (
-          <div key={i}>
-            Linea {lines.length - i}: {line}
-          </div>
-        ))}
+
+        {/* Colonna monete */}
+        <div className="flex justify-center gap-6">
+          {coins.map((c, i) => (
+            <div
+              key={i}
+              className="w-20 h-24 flex flex-col items-center justify-start"
+            >
+              <Image
+                src={c === "Testa" ? "/Testa.png" : "/Croce.png"}
+                alt={c}
+                width={80}
+                height={80}
+              />
+              <span className="mt-2 text-sm font-medium">{c}</span>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
