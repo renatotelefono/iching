@@ -43,9 +43,22 @@ export default function CoinToss({
 
     setSpinning(true);
 
+    // 🔹 Animazione: cambia casualmente le monete ogni 150 ms
+    const interval = setInterval(() => {
+      setCoins([
+        Math.random() < 0.5 ? "Testa" : "Croce",
+        Math.random() < 0.5 ? "Testa" : "Croce",
+        Math.random() < 0.5 ? "Testa" : "Croce",
+      ]);
+    }, 150);
+
+    // 🔹 Dopo 1.5 secondi ferma animazione e calcola il risultato reale
     setTimeout(() => {
+      clearInterval(interval);
+
       const results: ("Testa" | "Croce")[] = [tossCoin(), tossCoin(), tossCoin()];
       setCoins(results);
+
       const line = calcLine(results);
       const newLines = [...lines, line];
       setLines(newLines);
@@ -69,13 +82,12 @@ export default function CoinToss({
         {lines.length < 6 ? "Lancia le monete" : "Esagramma completato"}
       </button>
 
+      {/* Monete + dicitura */}
       <div className="flex justify-center gap-6 mt-4">
         {coins.map((c, i) => (
           <div
             key={i}
-            className={`w-20 h-20 rounded-full flex items-center justify-center ${
-              spinning ? "animate-spin" : ""
-            }`}
+            className="w-20 h-24 flex flex-col items-center justify-start"
           >
             <Image
               src={c === "Testa" ? "/Testa.png" : "/Croce.png"}
@@ -83,10 +95,13 @@ export default function CoinToss({
               width={80}
               height={80}
             />
+            {/* Scritta sotto la moneta */}
+            <span className="mt-2 text-sm font-medium">{c}</span>
           </div>
         ))}
       </div>
 
+      {/* Linee generate */}
       <div className="mt-6 text-left font-mono text-sm">
         {lines.slice().reverse().map((line, i) => (
           <div key={i}>
