@@ -145,7 +145,7 @@ export default function CoinToss({
               <p className="font-bold mb-2 text-center">
                 {kw}. {meta.title} {meta.hanzi} ({meta.pinyin})
               </p>
-              <HexagramView lines={lines} title="Esagramma" />
+              <HexagramView lines={lines} title="Esagramma Primario" />
             </div>
           )}
         </div>

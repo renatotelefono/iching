@@ -1,1 +1,6 @@
-scrivi la domanda clicca le tre monete e vedrai l esagramma primario e  le linee mobili
+scrivi la domanda , poi clicca sul bottone "Lancia le monete" per 6 volte.
+Alla fine dei 6 lanci sul bottone comparirà "Esagramma  Completo"
+A quel punto comparirà il numero, l'immagine e il titolo dell'Esagramma Primario e  le linee mobili
+Puoi adesso cliccare sul tasto lettura e dopo qualche secondo arriverà l interpretazione.
+A seguire troverai la descrizione di tutti i valori correlati.
+I Trigrammi , l' Esagramma di Relazione , l'Esagramma Nucleare , e l'Esagramma Complementare.
