@@ -84,7 +84,7 @@ export default function CoinToss({
 
   return (
     <div className="p-4 border rounded-lg bg-gray-50">
-      <h2 className="font-bold text-lg mb-2 text-center">Simulatore I Ching</h2>
+      <h2 className="font-bold text-lg mb-2 text-center"> I Ching</h2>
 
       {/* PRIMA RIGA: bottone + monete */}
       <div className="flex flex-col items-center gap-4">
