@@ -155,21 +155,25 @@ export default function Page() {
       )}
 
       {/* 🔹 Riquadro DOMANDA */}
-      <div className="rounded-xl border bg-white shadow-sm p-4">
-        <label className="text-sm font-medium">Domanda</label>
-        <input
-          value={question}
-          onChange={(e) => setQuestion(e.target.value)}
-          placeholder="Scrivi la tua intenzione/domanda…"
-          className="w-full rounded-lg border px-3 py-2 text-sm mt-1"
-        />
-      </div>
+     <div className="rounded-xl border bg-white shadow-sm p-4">
+  <label className="text-sm font-medium">La tua domanda <span className="text-red-500">*</span></label>
+  <input
+    value={question}
+    onChange={(e) => setQuestion(e.target.value)}
+    placeholder="Obbligatoria per lanciare le monete"
+    className="w-full rounded-lg border px-3 py-2 text-sm mt-1 placeholder-gray-400"
+  />
+</div>
 
-      {/* 🔹 Simulatore monete */}
-      <CoinToss
-        key={coinTossKey}
-        onComplete={(newLines) => setLines(newLines)}
-      />
+
+
+     {/* 🔹 Simulatore monete */}
+<CoinToss
+  key={coinTossKey}
+  onComplete={(newLines) => setLines(newLines)}
+  disabled={!question.trim()}   // 👈 disabilita se non c’è domanda
+/>
+
 
       {/* 🔹 Se c’è interpretazione, mostra tutto il resto */}
       {interpretazione && (

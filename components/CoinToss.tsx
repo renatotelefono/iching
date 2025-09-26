@@ -36,9 +36,11 @@ function renderLineLabel(value: LineValue): string {
 export default function CoinToss({
   onComplete,
   resetSignal,
+  disabled,   // 👈 nuova prop
 }: {
   onComplete: (lines: LineValue[]) => void;
   resetSignal?: number;
+  disabled?: boolean;           // 👈 definizione prop
 }) {
   const [lines, setLines] = useState<LineValue[]>([]);
   const [spinning, setSpinning] = useState(false);
@@ -57,7 +59,7 @@ export default function CoinToss({
 
     const interval = setInterval(() => {
       setCoins([tossCoin(), tossCoin(), tossCoin()]);
-    }, 300);
+    }, 150);
 
     setTimeout(() => {
       clearInterval(interval);
@@ -84,13 +86,13 @@ export default function CoinToss({
 
   return (
     <div className="p-4 border rounded-lg bg-gray-50">
-      <h2 className="font-bold text-lg mb-2 text-center"> I Ching</h2>
+      <h2 className="font-bold text-lg mb-2 text-center">I Ching</h2>
 
       {/* PRIMA RIGA: bottone + monete */}
       <div className="flex flex-col items-center gap-4">
         <button
           onClick={startToss}
-          disabled={spinning || lines.length >= 6}
+          disabled={disabled || spinning || lines.length >= 6}  // 👈 disabilita se manca la domanda
           className="px-4 py-2 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 disabled:opacity-50"
         >
           {lines.length < 6 ? "Lancia le monete" : "Esagramma completato"}
@@ -132,7 +134,7 @@ export default function CoinToss({
                     <span>
                       {lineValue !== undefined ? renderLineLabel(lineValue) : ""}
                     </span>
-                    <span className="text-gray-500">Lancio numero {lineNumber}</span>
+                    <span className="text-gray-500">. {lineNumber}</span>
                   </div>
                 );
               })}
@@ -145,7 +147,7 @@ export default function CoinToss({
               <p className="font-bold mb-2 text-center">
                 {kw}. {meta.title} {meta.hanzi} ({meta.pinyin})
               </p>
-              <HexagramView lines={lines} title="Esagramma Primario" />
+              <HexagramView lines={lines} title="Esagramma" />
             </div>
           )}
         </div>
