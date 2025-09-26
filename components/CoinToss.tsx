@@ -86,41 +86,17 @@ export default function CoinToss({
     <div className="p-4 border rounded-lg bg-gray-50">
       <h2 className="font-bold text-lg mb-2 text-center">Simulatore I Ching</h2>
 
-      <button
-        onClick={startToss}
-        disabled={spinning || lines.length >= 6}
-        className="px-4 py-2 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 disabled:opacity-50 w-full"
-      >
-        {lines.length < 6 ? "Lancia le monete" : "Esagramma completato"}
-      </button>
+      {/* PRIMA RIGA: bottone + monete */}
+      <div className="flex flex-col items-center gap-4">
+        <button
+          onClick={startToss}
+          disabled={spinning || lines.length >= 6}
+          className="px-4 py-2 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 disabled:opacity-50"
+        >
+          {lines.length < 6 ? "Lancia le monete" : "Esagramma completato"}
+        </button>
 
-      {/* Layout a tre colonne: linee | monete | esagramma */}
-      <div className="flex justify-center items-start gap-8 mt-6">
-        
-        {/* Colonna linee */}
-        <div className="text-left font-mono text-sm">
-          <p className="font-bold mb-2">Linee (dal basso all’alto)</p>
-          <div className="border rounded-lg p-2 bg-white shadow-sm">
-            {Array.from({ length: 6 }, (_, idx) => {
-              const lineValue = lines[idx];
-              const lineNumber = idx + 1;
-              return (
-                <div
-                  key={idx}
-                  className="flex items-center justify-between mb-1 px-2 py-1 border rounded-md bg-gray-50"
-                >
-                  <span>
-                    {lineValue !== undefined ? renderLineLabel(lineValue) : ""}
-                  </span>
-                  <span className="text-gray-500">. {lineNumber}</span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Colonna monete */}
-        <div className="flex justify-center gap-6">
+        <div className="border rounded-lg shadow-sm bg-white p-4 flex justify-center gap-6 flex-wrap">
           {coins.map((c, i) => (
             <div
               key={i}
@@ -132,20 +108,47 @@ export default function CoinToss({
                 width={80}
                 height={80}
               />
-              <span className="mt-2 text-sm font-medium">{c}</span>
+              <span className="mt-2 text-xl font-bold font-[Verdana]">{c}</span>
             </div>
           ))}
         </div>
+      </div>
 
-        {/* Colonna esagramma */}
-        {isComplete && kw && meta && (
-          <div className="w-56">
-            <p className="font-bold mb-2 text-center">
-              {kw}. {meta.title} {meta.hanzi} ({meta.pinyin})
-            </p>
-            <HexagramView lines={lines} title="Esagramma" />
+      {/* SECONDA RIGA: linee + esagramma centrati */}
+      <div className="flex justify-center mt-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl w-full items-start">
+          {/* Colonna linee */}
+          <div className="border rounded-lg shadow-sm bg-white p-2 text-left font-mono text-sm">
+            <p className="font-bold mb-2">Linee (dal basso all’alto)</p>
+            <div className="border rounded-lg p-2 bg-gray-50">
+              {Array.from({ length: 6 }, (_, idx) => {
+                const lineValue = lines[idx];
+                const lineNumber = idx + 1;
+                return (
+                  <div
+                    key={idx}
+                    className="flex items-center justify-between mb-1 px-2 py-1 border rounded-md bg-white"
+                  >
+                    <span>
+                      {lineValue !== undefined ? renderLineLabel(lineValue) : ""}
+                    </span>
+                    <span className="text-gray-500">. {lineNumber}</span>
+                  </div>
+                );
+              })}
+            </div>
           </div>
-        )}
+
+          {/* Colonna esagramma */}
+          {isComplete && kw && meta && (
+            <div className="border rounded-lg shadow-sm bg-white p-2">
+              <p className="font-bold mb-2 text-center">
+                {kw}. {meta.title} {meta.hanzi} ({meta.pinyin})
+              </p>
+              <HexagramView lines={lines} title="Esagramma" />
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
