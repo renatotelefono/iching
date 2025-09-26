@@ -57,7 +57,7 @@ export default function CoinToss({
 
     const interval = setInterval(() => {
       setCoins([tossCoin(), tossCoin(), tossCoin()]);
-    }, 150);
+    }, 300);
 
     setTimeout(() => {
       clearInterval(interval);
@@ -73,7 +73,7 @@ export default function CoinToss({
       if (newLines.length === 6) {
         onComplete(newLines);
       }
-    }, 1500);
+    }, 500);
   }
 
   // Calcola numero e nome esagramma se completo
@@ -132,7 +132,7 @@ export default function CoinToss({
                     <span>
                       {lineValue !== undefined ? renderLineLabel(lineValue) : ""}
                     </span>
-                    <span className="text-gray-500">. {lineNumber}</span>
+                    <span className="text-gray-500">Lancio numero {lineNumber}</span>
                   </div>
                 );
               })}

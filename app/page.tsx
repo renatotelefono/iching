@@ -128,14 +128,14 @@ export default function Page() {
             className="px-3 py-2 rounded-xl bg-green-600 text-white text-sm shadow hover:opacity-90"
             disabled={loadingInterp}
           >
-            {loadingInterp ? "In elaborazione..." : "Interpretazione"}
+            {loadingInterp ? "Aspetta.." : "Lettura"}
           </button>
 
           <button
             onClick={handleExplain}
             className="px-3 py-2 rounded-xl bg-blue-600 text-white text-sm shadow hover:opacity-90"
           >
-            Spiegazione
+            Istruzioni
           </button>
 
           <button
