@@ -35,6 +35,7 @@ function getHexText(kw: number): HexText | null {
 export default function Page() {
   const [lines, setLines] = useState<LineValue[]>([7, 8, 7, 8, 7, 8]);
   const [question, setQuestion] = useState("");
+ const [tossCount, setTossCount] = useState(0);   // 👈 nuovo stato 
   const [lineMode, setLineMode] = useState<"all" | "first" | "last">("all");
 
   const [showExplanation, setShowExplanation] = useState(false);
@@ -102,8 +103,10 @@ export default function Page() {
   }
 
   function resetApp() {
-    window.location.reload();
-  }
+  setTossCount(0);   // 👈 azzera i lanci
+  window.location.reload();
+}
+
 
   async function handleExplain() {
     try {
@@ -125,8 +128,11 @@ export default function Page() {
         <div className="flex gap-2">
           <button
             onClick={handleInterpretazione}
-            className="px-3 py-2 rounded-xl bg-green-600 text-white text-sm shadow hover:opacity-90"
-            disabled={loadingInterp}
+             className="px-3 py-2 rounded-xl bg-green-600 text-white text-sm shadow hover:opacity-90 
+             disabled:opacity-50 disabled:cursor-not-allowed"
+           disabled={
+              loadingInterp || !question.trim() || tossCount !== 1   // 👈 condizione aggiornata
+            }
           >
             {loadingInterp ? "Aspetta.." : "Lettura"}
           </button>
@@ -168,11 +174,16 @@ export default function Page() {
 
 
      {/* 🔹 Simulatore monete */}
+{/* 🔹 Simulatore monete */}
 <CoinToss
   key={coinTossKey}
-  onComplete={(newLines) => setLines(newLines)}
-  disabled={!question.trim()}   // 👈 disabilita se non c’è domanda
+  onComplete={(newLines) => {
+    setLines(newLines);
+    setTossCount((prev) => prev + 1);   // 👈 aumenta il contatore dei lanci
+  }}
+  disabled={!question.trim()}   // 👈 rimane disabilitato se non c’è domanda
 />
+
 
 
       {/* 🔹 Se c’è interpretazione, mostra tutto il resto */}
