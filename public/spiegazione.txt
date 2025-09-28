@@ -1,6 +1,10 @@
-scrivi la domanda , poi clicca sul bottone "Lancia le monete" per 6 volte.
-Alla fine dei 6 lanci sul bottone comparirà "Esagramma  Completo"
-A quel punto comparirà il numero, l'immagine e il titolo dell'Esagramma Primario e  le linee mobili
-Puoi adesso cliccare sul tasto lettura e dopo qualche secondo arriverà l interpretazione.
-A seguire troverai la descrizione di tutti i valori correlati.
-I Trigrammi , l' Esagramma di Relazione , l'Esagramma Nucleare , e l'Esagramma Complementare.
+Scrivi la domanda, poi clicca sul bottone "**Lancia le monete**" per 6 volte fino a che comparirà "**Fine dei 6 lanci**".
+
+A quel punto vedrai la rappresentazione dell'Esagramma Primario con il numero, il titolo (secondo Wilhem) e le linee.
+
+Puoi adesso cliccare sul tasto "**Lettura**" e dopo qualche secondo arriverà l'interpretazione.
+
+A seguire troverai i trigrammi, l'Esagramma Primario e l'Esagramma di Relazione 
+l'Esagramma Nucleare, e l'Esagramma Complementare con la loro descrizione.
+ 
+Se vuoi annullare la serie dei lanci effettuati o se vuoi fare una nuova consultazione puoi cliccare sul bottone "**Nuova Domanda**"

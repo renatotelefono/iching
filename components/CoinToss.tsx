@@ -95,7 +95,7 @@ export default function CoinToss({
           disabled={disabled || spinning || lines.length >= 6}  // 👈 disabilita se manca la domanda
           className="px-4 py-2 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 disabled:opacity-50"
         >
-          {lines.length < 6 ? "Lancia le monete" : "Esagramma completato"}
+          {lines.length < 6 ? "Lancia le monete" : "Fine dei 6 lanci"}
         </button>
 
         <div className="border rounded-lg shadow-sm bg-white p-4 flex justify-center gap-6 flex-wrap">
