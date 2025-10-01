@@ -8,3 +8,7 @@ A seguire troverai i trigrammi, l'Esagramma Primario e l'Esagramma di Relazione
 l'Esagramma Nucleare, e l'Esagramma Complementare con la loro descrizione.
  
 Se vuoi annullare la serie dei lanci effettuati o se vuoi fare una nuova consultazione puoi cliccare sul bottone "**Nuova Domanda**"
+
+L’esagramma principale ti dice “dove sei”,
+le linee mobili ti dicono “cosa si muove”,
+l’esagramma di relazione ti mostra “dove stai andando”.
