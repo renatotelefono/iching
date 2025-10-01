@@ -36,29 +36,37 @@ function renderLineLabel(value: LineValue): string {
 export default function CoinToss({
   onComplete,
   resetSignal,
-  disabled,   // 👈 nuova prop
+  disabled,
 }: {
   onComplete: (lines: LineValue[]) => void;
   resetSignal?: number;
-  disabled?: boolean;           // 👈 definizione prop
+  disabled?: boolean;
 }) {
   const [lines, setLines] = useState<LineValue[]>([]);
   const [spinning, setSpinning] = useState(false);
   const [coins, setCoins] = useState<Coin[]>(["Testa", "Testa", "Testa"]);
+  const [rotations, setRotations] = useState<number[]>([0, 0, 0]);
+  const [showLabels, setShowLabels] = useState(true);
+  const [pendingLine, setPendingLine] = useState<LineValue | null>(null);
 
   useEffect(() => {
     setLines([]);
     setCoins(["Testa", "Testa", "Testa"]);
     setSpinning(false);
+    setRotations([0, 0, 0]);
+    setShowLabels(true);
+    setPendingLine(null);
   }, [resetSignal]);
 
   async function startToss() {
     if (lines.length >= 6 || spinning) return;
 
     setSpinning(true);
+    setShowLabels(false);
 
     const interval = setInterval(() => {
       setCoins([tossCoin(), tossCoin(), tossCoin()]);
+      setRotations(r => r.map(val => val + 360));
     }, 150);
 
     setTimeout(() => {
@@ -67,18 +75,16 @@ export default function CoinToss({
       const results: Coin[] = [tossCoin(), tossCoin(), tossCoin()];
       setCoins(results);
 
-      const line = calcLine(results);
-      const newLines = [...lines, line];
-      setLines(newLines);
-      setSpinning(false);
+      setRotations(r =>
+        r.map((val, i) => val + (results[i] === "Testa" ? 0 : 180))
+      );
 
-      if (newLines.length === 6) {
-        onComplete(newLines);
-      }
-    }, 500);
+      const line = calcLine(results);
+      setPendingLine(line); // 👈 non aggiorno subito lines
+      setSpinning(false);
+    }, 1500);
   }
 
-  // Calcola numero e nome esagramma se completo
   const isComplete = lines.length === 6;
   const bits = isComplete ? toBits(lines) : null;
   const kw = bits ? kingWenNumber(bits) : null;
@@ -88,11 +94,10 @@ export default function CoinToss({
     <div className="p-4 border rounded-lg bg-gray-50">
       <h2 className="font-bold text-lg mb-2 text-center">I Ching</h2>
 
-      {/* PRIMA RIGA: bottone + monete */}
       <div className="flex flex-col items-center gap-4">
         <button
           onClick={startToss}
-          disabled={disabled || spinning || lines.length >= 6}  // 👈 disabilita se manca la domanda
+          disabled={disabled || spinning || lines.length >= 6}
           className="px-4 py-2 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 disabled:opacity-50"
         >
           {lines.length < 6 ? "Lancia le monete" : "Fine dei 6 lanci"}
@@ -102,24 +107,48 @@ export default function CoinToss({
           {coins.map((c, i) => (
             <div
               key={i}
-              className="w-20 h-24 flex flex-col items-center justify-start"
+              className="w-20 h-24 flex flex-col items-center justify-start perspective-1000"
             >
-              <Image
-                src={c === "Testa" ? "/Testa.png" : "/Croce.png"}
-                alt={c}
-                width={80}
-                height={80}
-              />
-              <span className="mt-2 text-xl font-bold font-[Verdana]">{c}</span>
+              <div
+                className="w-20 h-20"
+                style={{
+                  transition: "transform 2s cubic-bezier(0.5, 0, 1, 1)",
+                  transform: `rotateY(${rotations[i]}deg)`,
+                }}
+                onTransitionEnd={() => {
+                  if (i === coins.length - 1) {
+                    setShowLabels(true);
+
+                    if (pendingLine !== null) {
+                      const newLines = [...lines, pendingLine];
+                      setLines(newLines);
+                      setPendingLine(null);
+
+                      if (newLines.length === 6) {
+                        onComplete(newLines);
+                      }
+                    }
+                  }
+                }}
+              >
+                <Image
+                  src={c === "Testa" ? "/Testa.png" : "/Croce.png"}
+                  alt={c}
+                  width={80}
+                  height={80}
+                />
+              </div>
+              {showLabels && (
+                <span className="mt-2 text-xl font-bold font-[Verdana]">{c}</span>
+              )}
             </div>
           ))}
         </div>
       </div>
 
-      {/* SECONDA RIGA: linee + esagramma centrati */}
+      {/* Linee + esagramma */}
       <div className="flex justify-center mt-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl w-full items-start">
-          {/* Colonna linee */}
           <div className="border rounded-lg shadow-sm bg-white p-2 text-left font-mono text-sm">
             <p className="font-bold mb-2">Linee (dal basso all’alto)</p>
             <div className="border rounded-lg p-2 bg-gray-50">
@@ -141,7 +170,6 @@ export default function CoinToss({
             </div>
           </div>
 
-          {/* Colonna esagramma */}
           {isComplete && kw && meta && (
             <div className="border rounded-lg shadow-sm bg-white p-2">
               <p className="font-bold mb-2 text-center">
