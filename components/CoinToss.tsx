@@ -82,7 +82,7 @@ export default function CoinToss({
       const line = calcLine(results);
       setPendingLine(line); // 👈 non aggiorno subito lines
       setSpinning(false);
-    }, 1500);
+    }, 500);
   }
 
   const isComplete = lines.length === 6;
@@ -112,7 +112,7 @@ export default function CoinToss({
               <div
                 className="w-20 h-20"
                 style={{
-                  transition: "transform 2s cubic-bezier(0.5, 0, 1, 1)",
+                  transition: "transform 0.5s cubic-bezier(0.5, 0, 1, 1)",
                   transform: `rotateY(${rotations[i]}deg)`,
                 }}
                 onTransitionEnd={() => {
