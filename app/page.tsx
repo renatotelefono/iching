@@ -79,28 +79,31 @@ export default function Page() {
   const trigramsRelation = getTrigrams(relBits);
   const [coinTossKey, setCoinTossKey] = useState(0);
 
-  async function handleInterpretazione() {
-    setLoadingInterp(true);
-    try {
-      const res = await fetch("/api/iching", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          question,
-          esagramma: kw,
-          lineeMobili: displayedChanging,
-        }),
-      });
+async function handleInterpretazione() {
+  setLoadingInterp(true);
+  try {
+    const res = await fetch("/api/iching", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        question,                 // domanda utente
+        esagrammaPrimario: kw,    // esagramma primario
+        esagrammaRelazione: kwRel, // esagramma di relazione
+        lineeMobili: displayedChanging, // linee che mutano
+      }),
+    });
 
-      const data = await res.json();
-      setInterpretazione(data.answer || "Nessuna risposta ricevuta");
-    } catch (err) {
-      console.error("Errore API interpretazione:", err);
-      setInterpretazione("Errore durante la consultazione");
-    } finally {
-      setLoadingInterp(false);
-    }
+    const data = await res.json();
+    setInterpretazione(data.answer || "Nessuna risposta ricevuta");
+  } catch (err) {
+    console.error("Errore API interpretazione:", err);
+    setInterpretazione("Errore durante la consultazione");
+  } finally {
+    setLoadingInterp(false);
   }
+}
+
+
 
   function resetApp() {
   setTossCount(0);   // 👈 azzera i lanci

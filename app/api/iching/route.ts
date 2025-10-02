@@ -9,44 +9,56 @@ const client = new OpenAI({
 
 export async function POST(req: Request) {
   try {
-    // 🔹 Supporta sia i nomi nuovi che quelli vecchi
     const body = await req.json();
     const question = body.question;
-    const hexagram = body.hexagram || body.esagramma;
+
+    // 🔹 ricevi primario e relazione
+    const primaryHex = body.esagrammaPrimario || body.hexagram || body.esagramma;
+    const relationHex = body.esagrammaRelazione || body.hexagramRel || null;
+
     const changingLines = body.changingLines || body.lineeMobili;
 
-    // 1. Carica hexagrams
+    // 1. Carica esagrammi dal file
     const hexPath = path.resolve("data", "hexagrams.it.json");
     const raw = fs.readFileSync(hexPath, "utf-8");
     const hexagrams = JSON.parse(raw);
 
-    // 2. Usa l’esagramma passato dal frontend
-    const hex = hexagrams[String(hexagram)];
-    if (!hex) {
+    const hexPrimary = hexagrams[String(primaryHex)];
+    const hexRelation = relationHex ? hexagrams[String(relationHex)] : null;
+
+    if (!hexPrimary) {
       return NextResponse.json(
-        { error: `Esagramma ${hexagram} non trovato` },
+        { error: `Esagramma primario ${primaryHex} non trovato` },
         { status: 400 }
       );
     }
 
-    // 3. Prepara linee mobili
+    // 2. Prepara le linee mobili
     const selectedLines = (changingLines || []).map(
-      (n: number) => `Linea ${n}: ${hex.lines?.[n]}`
+      (n: number) => `Linea ${n}: ${hexPrimary.lines?.[n]}`
     );
 
-    // 4. Contesto per GPT
+    // 3. Costruisci contesto per GPT
     const context = `
 Domanda: ${question}
 
-Esagramma: ${hex.title}
-Giudizio: ${hex.judgment}
-Immagine: ${hex.image}
+Esagramma primario: ${hexPrimary.title}
+Giudizio: ${hexPrimary.judgment}
+Immagine: ${hexPrimary.image}
 
 Linee mobili:
 ${selectedLines.length > 0 ? selectedLines.join("\n") : "(nessuna)"}
+
+${
+  hexRelation
+    ? `Esagramma di relazione: ${hexRelation.title}
+Giudizio: ${hexRelation.judgment}
+Immagine: ${hexRelation.image}`
+    : ""
+}
 `;
 
-    // 5. Chiamata a OpenAI
+    // 4. Chiamata a OpenAI
     const completion = await client.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
@@ -61,7 +73,6 @@ ${selectedLines.length > 0 ? selectedLines.join("\n") : "(nessuna)"}
 
     const answer = completion.choices[0].message?.content || "";
 
-    // 🔹 Non scrive più il file, restituisce solo la risposta
     return NextResponse.json({ answer });
   } catch (err: any) {
     console.error("Errore API:", err);
