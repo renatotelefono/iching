@@ -28,7 +28,7 @@ export default function ExplanationPanel({
     splitIndex >= 0 ? paragraphs.slice(splitIndex + 1) : [];
 
   // 🔹 Numero paragrafi per chunk
-  const CHUNK_SIZE = 6;
+  const CHUNK_SIZE = 12;
   const [visibleCount, setVisibleCount] = useState(0);
 
   const visibleAfter = afterExtra.slice(0, visibleCount);
