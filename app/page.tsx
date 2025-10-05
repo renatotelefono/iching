@@ -85,12 +85,15 @@ async function handleInterpretazione() {
     const res = await fetch("/api/iching", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        question,                 // domanda utente
-        esagrammaPrimario: kw,    // esagramma primario
-        esagrammaRelazione: kwRel, // esagramma di relazione
-        lineeMobili: displayedChanging, // linee che mutano
-      }),
+    body: JSON.stringify({
+  question,                  // domanda utente
+  esagrammaPrimario: kw,     // esagramma primario
+  esagrammaRelazione: kwRel, // esagramma di relazione
+  esagrammaNucleare: kwNuclear,       // 👈 aggiunto
+  esagrammaComplementare: kwComplementary, // 👈 aggiunto
+  lineeMobili: displayedChanging,     // linee che mutano
+}),
+
     });
 
     const data = await res.json();

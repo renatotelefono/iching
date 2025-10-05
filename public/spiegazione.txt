@@ -18,7 +18,9 @@ Puoi adesso cliccare sul tasto "**Lettura**" e dopo qualche secondo arriverà l'
 Se vuoi annullare la serie dei lanci effettuati o se vuoi fare una nuova consultazione puoi cliccare sul bottone "**Nuova Domanda**"
 
 L’esagramma principale ti dice “**dove sei**”,
+
 le linee mobili ti dicono “**cosa si muove**”,
+
 l’esagramma di relazione ti mostra “**dove stai andando**”.
 
 **ulteriori informazioni:**
