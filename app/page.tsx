@@ -18,6 +18,7 @@ import HEX_TEXT_IT from "@/data/hexagrams.it.json";
 import HexagramView from "@/components/HexagramView";
 import ExplanationPanel from "@/components/ExplanationPanel";
 import CoinToss from "@/components/CoinToss";
+
 type HexTextLines = Partial<Record<"1" | "2" | "3" | "4" | "5" | "6", string>>;
 type HexText = {
   title?: string;
@@ -33,9 +34,15 @@ function getHexText(kw: number): HexText | null {
 }
 
 export default function Page() {
+  // ─────────────────────────────────────────────
+  // Stati principali
+  // ─────────────────────────────────────────────
   const [lines, setLines] = useState<LineValue[]>([7, 8, 7, 8, 7, 8]);
   const [question, setQuestion] = useState("");
- const [tossCount, setTossCount] = useState(0);   // 👈 nuovo stato 
+  const [validatedQuestion, setValidatedQuestion] = useState<string | null>(null);
+  const [isConfirmed, setIsConfirmed] = useState(false);
+  const [validating, setValidating] = useState(false);
+  const [tossCount, setTossCount] = useState(0);
   const [lineMode, setLineMode] = useState<"all" | "first" | "last">("all");
 
   const [showExplanation, setShowExplanation] = useState(false);
@@ -44,7 +51,11 @@ export default function Page() {
   const [interpretazione, setInterpretazione] = useState("");
   const [loadingInterp, setLoadingInterp] = useState(false);
 
-  // calcoli principali
+  const [coinTossKey, setCoinTossKey] = useState(0);
+
+  // ─────────────────────────────────────────────
+  // Calcoli principali I Ching
+  // ─────────────────────────────────────────────
   const bits = useMemo(() => toBits(lines), [lines]);
   const relLines = useMemo(() => mutate(lines), [lines]);
   const relBits = useMemo(() => toBits(relLines), [relLines]);
@@ -77,42 +88,74 @@ export default function Page() {
 
   const trigramsPrimary = getTrigrams(bits);
   const trigramsRelation = getTrigrams(relBits);
-  const [coinTossKey, setCoinTossKey] = useState(0);
 
-async function handleInterpretazione() {
-  setLoadingInterp(true);
-  try {
-    const res = await fetch("/api/iching", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-  question,                  // domanda utente
-  esagrammaPrimario: kw,     // esagramma primario
-  esagrammaRelazione: kwRel, // esagramma di relazione
-  esagrammaNucleare: kwNuclear,       // 👈 aggiunto
-  esagrammaComplementare: kwComplementary, // 👈 aggiunto
-  lineeMobili: displayedChanging,     // linee che mutano
-}),
+  // ─────────────────────────────────────────────
+  // Validazione domanda con OpenAI
+  // ─────────────────────────────────────────────
+  async function handleValidateQuestion() {
+    if (!question.trim()) return;
 
-    });
+    setValidating(true);
+    setValidatedQuestion(null);
+    setIsConfirmed(false);
 
-    const data = await res.json();
-    setInterpretazione(data.answer || "Nessuna risposta ricevuta");
-  } catch (err) {
-    console.error("Errore API interpretazione:", err);
-    setInterpretazione("Errore durante la consultazione");
-  } finally {
-    setLoadingInterp(false);
+    try {
+      const res = await fetch("/api/validateQuestion", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question }),
+      });
+      const data = await res.json();
+
+      if (data.validatedQuestion) {
+        setValidatedQuestion(data.validatedQuestion);
+      } else {
+        alert("Errore nella validazione della domanda.");
+      }
+    } catch (err) {
+      console.error("Errore durante la validazione:", err);
+      alert("Errore di connessione all'API di validazione.");
+    } finally {
+      setValidating(false);
+    }
   }
-}
 
+  // ─────────────────────────────────────────────
+  // Interpretazione con API interna /api/iching
+  // ─────────────────────────────────────────────
+  async function handleInterpretazione() {
+    setLoadingInterp(true);
+    try {
+      const res = await fetch("/api/iching", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          question: validatedQuestion || question,
+          esagrammaPrimario: kw,
+          esagrammaRelazione: kwRel,
+          esagrammaNucleare: kwNuclear,
+          esagrammaComplementare: kwComplementary,
+          lineeMobili: displayedChanging,
+        }),
+      });
 
+      const data = await res.json();
+      setInterpretazione(data.answer || "Nessuna risposta ricevuta");
+    } catch (err) {
+      console.error("Errore API interpretazione:", err);
+      setInterpretazione("Errore durante la consultazione");
+    } finally {
+      setLoadingInterp(false);
+    }
+  }
 
+  // ─────────────────────────────────────────────
+  // Reset e spiegazione
+  // ─────────────────────────────────────────────
   function resetApp() {
-  setTossCount(0);   // 👈 azzera i lanci
-  window.location.reload();
-}
-
+    setTossCount(0);
+    window.location.reload();
+  }
 
   async function handleExplain() {
     try {
@@ -126,19 +169,19 @@ async function handleInterpretazione() {
     }
   }
 
+  // ─────────────────────────────────────────────
+  // Rendering
+  // ─────────────────────────────────────────────
   return (
     <div className="p-6 space-y-6 relative">
       {/* Header */}
       <header className="flex items-center justify-center">
-        
         <div className="flex gap-2">
           <button
             onClick={handleInterpretazione}
-             className="px-3 py-2 rounded-xl bg-green-600 text-white text-sm shadow hover:opacity-90 
+            className="px-3 py-2 rounded-xl bg-green-600 text-white text-sm shadow hover:opacity-90 
              disabled:opacity-50 disabled:cursor-not-allowed"
-           disabled={
-              loadingInterp || !question.trim() || tossCount !== 1   // 👈 condizione aggiornata
-            }
+            disabled={loadingInterp || !isConfirmed || tossCount !== 1}
           >
             {loadingInterp ? "Aspetta.." : "Lettura"}
           </button>
@@ -159,46 +202,94 @@ async function handleInterpretazione() {
         </div>
       </header>
 
-    {showExplanation && (
-  <ExplanationPanel
-    text={explanationText}
-    onClose={() => setShowExplanation(false)}
-    onBackToCoins={() => {
-      setShowExplanation(false);  // chiude il pannello
-      setTossCount(0);            // resetta eventuali conteggi
-      setCoinTossKey((k) => k + 1); // forza il riavvio del componente CoinToss
-    }}
-  />
-)}
+      {/* Pannello spiegazione */}
+      {showExplanation && (
+        <ExplanationPanel
+          text={explanationText}
+          onClose={() => setShowExplanation(false)}
+          onBackToCoins={() => {
+            setShowExplanation(false);
+            setTossCount(0);
+            setCoinTossKey((k) => k + 1);
+          }}
+        />
+      )}
 
+      {/* ──────────────────────────────── */}
+      {/* Riquadro DOMANDA */}
+      {/* ──────────────────────────────── */}
+      <div className="rounded-xl border bg-white shadow-sm p-4 space-y-3">
+        <label className="text-sm font-medium">
+          La tua domanda <span className="text-red-500">*</span>
+        </label>
 
-      {/* 🔹 Riquadro DOMANDA */}
-     <div className="rounded-xl border bg-white shadow-sm p-4">
-  <label className="text-sm font-medium">La tua domanda <span className="text-red-500">*</span></label>
-  <input
-    value={question}
-    onChange={(e) => setQuestion(e.target.value)}
-    placeholder="Obbligatoria per lanciare le monete"
-    className="w-full rounded-lg border px-3 py-2 text-sm mt-1 placeholder-gray-400"
-  />
-</div>
+        <input
+          value={question}
+          onChange={(e) => {
+            setQuestion(e.target.value);
+            setValidatedQuestion(null);
+            setIsConfirmed(false);
+          }}
+          placeholder="Scrivi la domanda da porre all'I Ching"
+          className="w-full rounded-lg border px-3 py-2 text-sm mt-1 placeholder-gray-400"
+        />
 
+        {!validatedQuestion && (
+          <button
+            onClick={handleValidateQuestion}
+            disabled={validating || !question.trim()}
+            className="px-3 py-2 rounded-xl bg-blue-600 text-white text-sm shadow hover:opacity-90 disabled:opacity-50"
+          >
+            {validating ? "Analisi in corso..." : "Conferma domanda con l’IA"}
+          </button>
+        )}
 
+        {validatedQuestion && !isConfirmed && (
+          <div className="mt-3 border-t pt-3 text-sm">
+            <p><b>Domanda interpretata:</b> {validatedQuestion}</p>
+            <p className="text-neutral-500 mt-1">Confermi che è questa la tua domanda?</p>
+            <div className="flex gap-2 mt-2">
+              <button
+                onClick={() => setIsConfirmed(true)}
+                className="px-3 py-1 rounded-xl bg-green-600 text-white text-sm"
+              >
+                Sì, confermo
+              </button>
+              <button
+                onClick={() => {
+                  setValidatedQuestion(null);
+                  setIsConfirmed(false);
+                }}
+                className="px-3 py-1 rounded-xl bg-gray-400 text-white text-sm"
+              >
+                No, voglio modificarla
+              </button>
+            </div>
+          </div>
+        )}
 
-     {/* 🔹 Simulatore monete */}
-{/* 🔹 Simulatore monete */}
-<CoinToss
-  key={coinTossKey}
-  onComplete={(newLines) => {
-    setLines(newLines);
-    setTossCount((prev) => prev + 1);   // 👈 aumenta il contatore dei lanci
-  }}
-  disabled={!question.trim()}   // 👈 rimane disabilitato se non c’è domanda
-/>
+        {isConfirmed && (
+          <p className="mt-2 text-green-700 text-sm">
+            ✅ Domanda confermata. Puoi lanciare le monete.
+          </p>
+        )}
+      </div>
 
+      {/* ──────────────────────────────── */}
+      {/* Simulatore monete */}
+      {/* ──────────────────────────────── */}
+      <CoinToss
+        key={coinTossKey}
+        onComplete={(newLines) => {
+          setLines(newLines);
+          setTossCount((prev) => prev + 1);
+        }}
+        disabled={!isConfirmed}
+      />
 
-
-      {/* 🔹 Se c’è interpretazione, mostra tutto il resto */}
+      {/* ──────────────────────────────── */}
+      {/* Se c’è interpretazione */}
+      {/* ──────────────────────────────── */}
       {interpretazione && (
         <>
           <div className="mt-4 border p-4 rounded bg-gray-50">
@@ -336,7 +427,7 @@ async function handleInterpretazione() {
             </section>
           </div>
 
-          {/* Linee mutanti: descrizione */}
+          {/* Linee mutanti */}
           <section className="rounded-xl border bg-white shadow-sm p-4">
             <h2 className="text-base font-bold">Linee che mutano</h2>
             {displayedChanging.length === 0 ? (

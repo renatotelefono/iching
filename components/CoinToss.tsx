@@ -8,6 +8,9 @@ import { LineValue, toBits, kingWenNumber } from "@/utils/iching";
 
 type Coin = "Testa" | "Croce";
 
+// ─────────────────────────────────────────────
+// Funzioni di utilità
+// ─────────────────────────────────────────────
 function tossCoin(): Coin {
   return Math.random() < 0.5 ? "Testa" : "Croce";
 }
@@ -33,6 +36,9 @@ function renderLineLabel(value: LineValue): string {
   }
 }
 
+// ─────────────────────────────────────────────
+// Componente principale
+// ─────────────────────────────────────────────
 export default function CoinToss({
   onComplete,
   resetSignal,
@@ -49,6 +55,7 @@ export default function CoinToss({
   const [showLabels, setShowLabels] = useState(true);
   const [pendingLine, setPendingLine] = useState<LineValue | null>(null);
 
+  // 🔁 Reset completo quando cambia resetSignal
   useEffect(() => {
     setLines([]);
     setCoins(["Testa", "Testa", "Testa"]);
@@ -58,51 +65,81 @@ export default function CoinToss({
     setPendingLine(null);
   }, [resetSignal]);
 
+  // 🎲 Funzione di lancio monete
   async function startToss() {
-    if (lines.length >= 6 || spinning) return;
+    if (disabled || spinning || lines.length >= 6) return;
 
     setSpinning(true);
     setShowLabels(false);
 
+    // animazione rotazione continua
     const interval = setInterval(() => {
       setCoins([tossCoin(), tossCoin(), tossCoin()]);
-      setRotations(r => r.map(val => val + 360));
+      setRotations((r) => r.map((val) => val + 360));
     }, 150);
 
+    // ferma animazione e calcola il risultato
     setTimeout(() => {
       clearInterval(interval);
 
       const results: Coin[] = [tossCoin(), tossCoin(), tossCoin()];
       setCoins(results);
-
-      setRotations(r =>
+      setRotations((r) =>
         r.map((val, i) => val + (results[i] === "Testa" ? 0 : 180))
       );
 
       const line = calcLine(results);
-      setPendingLine(line); // 👈 non aggiorno subito lines
+      setPendingLine(line);
       setSpinning(false);
-    }, 500);
+    }, 600);
   }
 
+  // 🔹 Aggiorna linee dopo l’animazione
+  function handleAnimationEnd(i: number) {
+    if (i !== coins.length - 1) return;
+    setShowLabels(true);
+
+    if (pendingLine !== null) {
+      const newLines = [...lines, pendingLine];
+      setLines(newLines);
+      setPendingLine(null);
+
+      if (newLines.length === 6) {
+        onComplete(newLines);
+      }
+    }
+  }
+
+  // 🔸 Esagramma finale se completo
   const isComplete = lines.length === 6;
   const bits = isComplete ? toBits(lines) : null;
   const kw = bits ? kingWenNumber(bits) : null;
   const meta = kw ? HEX_META[kw] : null;
 
+  // ─────────────────────────────────────────────
+  // Rendering
+  // ─────────────────────────────────────────────
   return (
-    <div className="p-4 border rounded-lg bg-gray-50">
-      <h2 className="font-bold text-lg mb-2 text-center">I Ching</h2>
+    <div className="p-4 border rounded-lg bg-gray-50 shadow-sm">
+      <h2 className="font-bold text-lg mb-3 text-center">Consultazione I Ching</h2>
 
+      {/* Bottone principale */}
       <div className="flex flex-col items-center gap-4">
         <button
           onClick={startToss}
           disabled={disabled || spinning || lines.length >= 6}
-          className="px-4 py-2 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 disabled:opacity-50"
+          className="px-5 py-2 bg-indigo-600 text-white rounded-xl shadow hover:bg-indigo-700 disabled:opacity-50"
         >
-          {lines.length < 6 ? "Lancia le monete" : "Fine dei 6 lanci"}
+          {disabled
+            ? "Conferma prima la domanda"
+            : spinning
+            ? "Lancio in corso..."
+            : lines.length < 6
+            ? "Lancia le monete"
+            : "Hai completato i 6 lanci"}
         </button>
 
+        {/* Monete */}
         <div className="border rounded-lg shadow-sm bg-white p-4 flex justify-center gap-6 flex-wrap">
           {coins.map((c, i) => (
             <div
@@ -115,21 +152,7 @@ export default function CoinToss({
                   transition: "transform 0.5s cubic-bezier(0.5, 0, 1, 1)",
                   transform: `rotateY(${rotations[i]}deg)`,
                 }}
-                onTransitionEnd={() => {
-                  if (i === coins.length - 1) {
-                    setShowLabels(true);
-
-                    if (pendingLine !== null) {
-                      const newLines = [...lines, pendingLine];
-                      setLines(newLines);
-                      setPendingLine(null);
-
-                      if (newLines.length === 6) {
-                        onComplete(newLines);
-                      }
-                    }
-                  }
-                }}
+                onTransitionEnd={() => handleAnimationEnd(i)}
               >
                 <Image
                   src={c === "Testa" ? "/Testa.png" : "/Croce.png"}
@@ -146,9 +169,10 @@ export default function CoinToss({
         </div>
       </div>
 
-      {/* Linee + esagramma */}
+      {/* Linee e risultato */}
       <div className="flex justify-center mt-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl w-full items-start">
+          {/* Lista linee */}
           <div className="border rounded-lg shadow-sm bg-white p-2 text-left font-mono text-sm">
             <p className="font-bold mb-2">Linee (dal basso all’alto)</p>
             <div className="border rounded-lg p-2 bg-gray-50">
@@ -170,6 +194,7 @@ export default function CoinToss({
             </div>
           </div>
 
+          {/* Esagramma finale */}
           {isComplete && kw && meta && (
             <div className="border rounded-lg shadow-sm bg-white p-2">
               <p className="font-bold mb-2 text-center">
@@ -180,6 +205,17 @@ export default function CoinToss({
           )}
         </div>
       </div>
+
+      {/* Stato utente */}
+      {!isComplete && (
+        <p className="text-center text-sm text-gray-500 mt-4">
+          {disabled
+            ? "⚠️ Devi prima confermare la domanda per poter lanciare le monete."
+            : lines.length === 0
+            ? "Premi 'Lancia le monete' per iniziare."
+            : `Linea ${lines.length + 1} di 6 in preparazione...`}
+        </p>
+      )}
     </div>
   );
 }
