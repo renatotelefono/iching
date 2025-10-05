@@ -4,11 +4,55 @@ A quel punto vedrai la rappresentazione dell'Esagramma Primario con il numero, i
 
 Puoi adesso cliccare sul tasto "**Lettura**" e dopo qualche secondo arriverà l'interpretazione.
 
-A seguire troverai i trigrammi, l'Esagramma Primario e l'Esagramma di Relazione 
-l'Esagramma Nucleare, e l'Esagramma Complementare con la loro descrizione.
+
+**i trigrammi:** sono la struttura simbolica fondamentale.
+
+**Esagramma primario:** la situazione attuale
+
+**Esagramma di relazione (se ci sono linee mobili):** dove sta andando la situazione
+
+**Esagramma nucleare:** cosa sta maturando dentro
+
+**Esagramma complementare:** cosa serve per completare/bilanciare
  
 Se vuoi annullare la serie dei lanci effettuati o se vuoi fare una nuova consultazione puoi cliccare sul bottone "**Nuova Domanda**"
 
-L’esagramma principale ti dice “dove sei”,
-le linee mobili ti dicono “cosa si muove”,
-l’esagramma di relazione ti mostra “dove stai andando”.
+L’esagramma principale ti dice “**dove sei**”,
+le linee mobili ti dicono “**cosa si muove**”,
+l’esagramma di relazione ti mostra “**dove stai andando**”.
+
+**ulteriori informazioni:**
+
+Un trigramma è un insieme di tre linee (yao), ognuna può essere intera (—) cioè yang oppure spezzata (– –) cioè yin.
+
+Con 3 linee si ottengono 8 combinazioni possibili, quindi 8 trigrammi.
+
+Ogni trigramma ha un nome, un’immagine naturale e un significato archetipico.
+
+Ecco gli otto trigrammi:
+
+☰ Qián (Cielo) – forza creativa, padre
+
+☷ Kūn (Terra) – ricettività, madre
+
+☳ Zhèn (Tuono) – movimento, il figlio maggiore
+
+☵ Kǎn (Acqua) – pericolo, il figlio medio
+
+☶ Gèn (Montagna) – quiete, il figlio minore
+
+☴ Xùn (Vento/Legno) – penetrazione, la figlia maggiore
+
+☲ Lí (Fuoco) – chiarezza, la figlia media
+
+☱ Duì (Lago/Palude) – gioia, la figlia minore
+
+🔹 A cosa servono:
+
+Base degli esagrammi: unendo due trigrammi (sopra e sotto) si ottengono i 64 esagrammi, cioè le figure centrali dell’I Ching.
+
+Simbolismo universale: rappresentano fenomeni naturali, principi cosmici e atteggiamenti psicologici.
+
+Chiavi interpretative: nei responsi divinatori, il trigramma superiore e quello inferiore descrivono la situazione e la sua evoluzione.
+
+Modello cosmologico: sono una rappresentazione dei mutamenti dell’universo attraverso yin e yang

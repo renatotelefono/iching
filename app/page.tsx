@@ -156,12 +156,18 @@ async function handleInterpretazione() {
         </div>
       </header>
 
-      {showExplanation && (
-        <ExplanationPanel
-          text={explanationText}
-          onClose={() => setShowExplanation(false)}
-        />
-      )}
+    {showExplanation && (
+  <ExplanationPanel
+    text={explanationText}
+    onClose={() => setShowExplanation(false)}
+    onBackToCoins={() => {
+      setShowExplanation(false);  // chiude il pannello
+      setTossCount(0);            // resetta eventuali conteggi
+      setCoinTossKey((k) => k + 1); // forza il riavvio del componente CoinToss
+    }}
+  />
+)}
+
 
       {/* 🔹 Riquadro DOMANDA */}
      <div className="rounded-xl border bg-white shadow-sm p-4">
