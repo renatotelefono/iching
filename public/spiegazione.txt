@@ -23,9 +23,9 @@ le linee mobili ti dicono “**cosa si muove**”,
 
 l’esagramma di relazione ti mostra “**dove stai andando**”.
 
-🔹**ulteriori informazioni:**
+**ulteriori informazioni:**
 
-Un trigramma è un insieme di tre linee (yao), ognuna può essere intera (—) cioè yang oppure spezzata (– –) cioè yin.
+Un **trigramma** è un insieme di tre linee (yao), ognuna può essere intera (—) cioè **yang** oppure spezzata (– –) cioè **yin**.
 
 Con 3 linee si ottengono 8 combinazioni possibili, quindi 8 trigrammi.
 
@@ -49,7 +49,7 @@ Ecco gli otto trigrammi:
 
 ☱ Duì (Lago/Palude) – gioia, la figlia minore
 
-🔹 A cosa servono:
+ A cosa servono:
 
 Base degli esagrammi: unendo due trigrammi (sopra e sotto) si ottengono i 64 esagrammi, cioè le figure centrali dell’I Ching.
 
@@ -60,7 +60,7 @@ Chiavi interpretative: nei responsi divinatori, il trigramma superiore e quello 
 Modello cosmologico: sono una rappresentazione dei mutamenti dell’universo attraverso yin e yang
 
 
-🔹 Esagramma primario:
+ **Esagramma primario**:
 È l’immagine di partenza, il momento presente della situazione su cui stai chiedendo.
 Si ottiene dal lancio delle monete o dei bastoncini, linea per linea (sei linee in totale).
 
@@ -78,14 +78,14 @@ Le linee mobili (mutanti) indicano dove sta avvenendo il cambiamento.
 
 L’esagramma primario rappresenta la condizione attuale, le forze in gioco prima del mutamento.
 
-🔹 Esagramma di relazione:
+**Esagramma di relazione**:
 
 Quando ci sono linee mobili, queste si trasformano nel loro opposto (Yin ⇄ Yang).
 Il nuovo disegno di sei linee forma un secondo esagramma, detto: esagramma di relazione
 
 Questo mostra la direzione del cambiamento, cioè verso cosa evolve la situazione se il processo continua naturalmente.
 
-🔹 Esagramma nucleare:
+**Esagramma nucleare**:
 
 È come l’anima profonda dell’esagramma primario.
 Si costruisce prendendo le quattro linee centrali dell’esagramma (cioè linee 2-3-4-5) e, da queste, formando un nuovo esagramma di sei linee:
@@ -96,7 +96,7 @@ Le linee 3-4-5 diventano le linee 4-5-6 del nucleare.
 
 Rappresenta ciò che si muove nel profondo, le motivazioni interiori, spesso inconsce o latenti.
 
-🔹 Esagramma Complementare:
+**Esagramma Complementare**:
 
 Si ottiene invertendo tutti i segni Yin e Yang del primario:
 
@@ -109,4 +109,4 @@ ciò che manca per l’equilibrio,
 
 la lezione complementare da integrare,
 
-o, in termini psicologici, la parte ombra o nascosta dell’esperienza.
+o, in termini psicologici, la parte ombra o nascosta dell’esperienza.🔹
